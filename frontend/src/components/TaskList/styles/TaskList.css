@@ -1,0 +1,144 @@
+/* 任务列表容器 */
+.task-list-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 任务列表标题 */
+.task-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 任务项样式 */
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.task-item:hover {
+  background-color: #f5f5f5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 任务内容布局 */
+.task-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* 任务左侧（复选框和标题） */
+.task-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.task-checkbox {
+  margin: 0;
+}
+
+.task-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+  margin: 0;
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* 任务右侧（日期） */
+.task-item-right {
+  display: flex;
+  align-items: center;
+}
+
+.task-time {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.45);
+  margin-right: 16px;
+}
+
+/* 任务操作按钮 */
+.task-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.action-button {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transition: all 0.3s;
+}
+
+.action-button:hover {
+  background-color: #f0f0f0;
+  color: #1890ff;
+}
+
+.action-button.danger:hover {
+  color: #ff4d4f;
+}
+
+/* 任务步骤列表 */
+.task-steps {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #f0f0f0;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.step-checkbox {
+  margin: 0;
+}
+
+.step-title {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.75);
+  margin: 0;
+}
+
+.step-title.completed {
+  text-decoration: line-through;
+  color: rgba(0, 0, 0, 0.45);
+}

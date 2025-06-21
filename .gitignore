@@ -4,6 +4,7 @@
 frontend/node_modules
 /.pnp
 .pnp.js
+.cursor
 
 # testing
 /coverage
@@ -13,8 +14,9 @@ frontend/node_modules
 
 # possible env
 myenv.txt
+backend/.env
 
-# misc
+# mis
 .DS_Store
 .env.local
 .env.development.local

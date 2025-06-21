@@ -1,25 +1,34 @@
 import React, { useState } from 'react';
+import { Card, Form, Input, Button, Checkbox, Tabs, Typography, Alert, Space } from 'antd';
+import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import './Login.css';
 
+const { Title, Text } = Typography;
+const { TabPane } = Tabs;
+
 const Login = ({ onLogin, onRegister }) => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [activeTab, setActiveTab] = useState('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values) => {
     setError('');
+    setLoading(true);
 
     try {
-      if (isLogin) {
+      if (activeTab === 'login') {
         // 登录请求
         const response = await fetch('http://localhost:8080/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ 
+            username: values.username, 
+            password: values.password 
+          }),
         });
 
         if (!response.ok) {
@@ -29,7 +38,7 @@ const Login = ({ onLogin, onRegister }) => {
         const data = await response.json();
         
         // 保存令牌和用户信息
-        if (rememberMe) {
+        if (values.remember) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
         } else {
@@ -41,14 +50,18 @@ const Login = ({ onLogin, onRegister }) => {
         onLogin(data.user);
       } else {
         // 注册请求
-        if (!email.includes('@')) {
+        if (!values.email.includes('@')) {
           throw new Error('请输入有效的电子邮件地址');
         }
 
         const response = await fetch('http://localhost:8080/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, email }),
+          body: JSON.stringify({ 
+            username: values.username, 
+            password: values.password, 
+            email: values.email 
+          }),
         });
 
         if (response.status === 409) {
@@ -62,7 +75,7 @@ const Login = ({ onLogin, onRegister }) => {
         const data = await response.json();
         
         // 保存令牌和用户信息
-        if (rememberMe) {
+        if (values.remember) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
         } else {
@@ -75,81 +88,144 @@ const Login = ({ onLogin, onRegister }) => {
       }
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const toggleMode = () => {
-    setIsLogin(!isLogin);
-    setError('');
   };
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <h1>{isLogin ? '登录' : '注册'}</h1>
-        <p className="subtitle">{isLogin ? '欢迎回来！' : '创建一个新账户'}</p>
+      <Card className="login-card">
+        <Title level={2} style={{ textAlign: 'center', marginBottom: 24 }}>
+          {activeTab === 'login' ? '登录' : '注册'}
+        </Title>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <Alert 
+            message={error} 
+            type="error" 
+            showIcon 
+            style={{ marginBottom: 24 }} 
+          />
+        )}
         
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="用户名"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
+        <Tabs 
+          activeKey={activeTab} 
+          onChange={setActiveTab}
+          centered
+        >
+          <TabPane tab="登录" key="login">
+            <Form
+              name="login"
+              initialValues={{ remember: false }}
+              onFinish={handleSubmit}
+              size="large"
+            >
+              <Form.Item
+                name="username"
+                rules={[{ required: true, message: '请输入用户名' }]}
+              >
+                <Input 
+                  prefix={<UserOutlined />} 
+                  placeholder="用户名" 
+                />
+              </Form.Item>
+              
+              <Form.Item
+                name="password"
+                rules={[{ required: true, message: '请输入密码' }]}
+              >
+                <Input.Password 
+                  prefix={<LockOutlined />} 
+                  placeholder="密码" 
+                />
+              </Form.Item>
+              
+              <Form.Item>
+                <Form.Item name="remember" valuePropName="checked" noStyle>
+                  <Checkbox>记住我</Checkbox>
+                </Form.Item>
+                
+                <a className="login-form-forgot" href="#" style={{ float: 'right' }}>
+                  忘记密码？
+                </a>
+              </Form.Item>
+              
+              <Form.Item>
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  className="login-form-button" 
+                  block
+                  loading={loading}
+                >
+                  登录
+                </Button>
+              </Form.Item>
+            </Form>
+          </TabPane>
           
-          {!isLogin && (
-            <div className="form-group">
-              <input
-                type="email"
-                placeholder="电子邮件"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-          )}
-          
-          <div className="form-group">
-            <input
-              type="password"
-              placeholder="密码"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          
-          <div className="form-footer">
-            <label className="remember-me">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              记住我
-            </label>
-            
-            {isLogin && <a href="#" className="forgot-password">忘记密码？</a>}
-          </div>
-          
-          <button type="submit" className="login-button">
-            {isLogin ? '登录' : '注册'}
-          </button>
-        </form>
-        
-        <div className="register-link">
-          {isLogin ? (
-            <>还没有账户？ <a href="#" onClick={toggleMode}>立即注册</a></>
-          ) : (
-            <>已有账户？ <a href="#" onClick={toggleMode}>立即登录</a></>
-          )}
-        </div>
-      </div>
+          <TabPane tab="注册" key="register">
+            <Form
+              name="register"
+              initialValues={{ remember: false }}
+              onFinish={handleSubmit}
+              size="large"
+            >
+              <Form.Item
+                name="username"
+                rules={[{ required: true, message: '请输入用户名' }]}
+              >
+                <Input 
+                  prefix={<UserOutlined />} 
+                  placeholder="用户名" 
+                />
+              </Form.Item>
+              
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: '请输入电子邮件' },
+                  { type: 'email', message: '请输入有效的电子邮件地址' }
+                ]}
+              >
+                <Input 
+                  prefix={<MailOutlined />} 
+                  placeholder="电子邮件" 
+                />
+              </Form.Item>
+              
+              <Form.Item
+                name="password"
+                rules={[{ required: true, message: '请输入密码' }]}
+              >
+                <Input.Password 
+                  prefix={<LockOutlined />} 
+                  placeholder="密码" 
+                />
+              </Form.Item>
+              
+              <Form.Item>
+                <Form.Item name="remember" valuePropName="checked" noStyle>
+                  <Checkbox>记住我</Checkbox>
+                </Form.Item>
+              </Form.Item>
+              
+              <Form.Item>
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  className="login-form-button" 
+                  block
+                  loading={loading}
+                >
+                  注册
+                </Button>
+              </Form.Item>
+            </Form>
+          </TabPane>
+        </Tabs>
+      </Card>
     </div>
   );
 };

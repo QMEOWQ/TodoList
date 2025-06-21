@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Login from './components/Login/Login';
 import "./App.css";
+import { Layout, Menu, Button, Input, Checkbox, Card, List, Typography, Divider, Collapse, Form, Space, Tag, Spin, Empty, Tabs, Modal, message } from 'antd';
+import { CheckOutlined, DeleteOutlined, EditOutlined, PlusOutlined, LogoutOutlined, DownOutlined, UpOutlined, UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import TaskList from './components/TaskList/TaskList';
+
+const { Header, Content } = Layout;
+const { TextArea } = Input;
+const { Title, Text, Paragraph } = Typography;
+const { Panel } = Collapse;
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -23,6 +31,37 @@ function App() {
   const [editTaskDesc, setEditTaskDesc] = useState("");
   const [editTaskSteps, setEditTaskSteps] = useState([]);
   const [updatingTodo, setUpdatingTodo] = useState(false);
+  
+  // 把导致错误的 hooks 移动到这里
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); 
+
+  // 用户认证状态
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [users, setUsers] = useState([]);
+  
+  // 管理员面板状态 - 移到组件顶部
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userTodos, setUserTodos] = useState([]);
+
+  // 切换任务完成状态
+  const handleToggleComplete = (taskId) => {
+    setTodos(todos.map(task => 
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  // 删除任务
+  const handleDeleteTask = (taskId) => {
+    setTodos(todos.filter(task => task.id !== taskId));
+  };
+
+  // 切换任务展开状态
+  const handleToggleExpand = (taskId) => {
+    // 这里可以添加展开/折叠逻辑，如果需要的话
+    console.log(`Toggle expand for task ${taskId}`);
+  };
   
   // Toggle expand/collapse for a specific task
   const toggleTaskExpand = (todoId) => {
@@ -48,15 +87,6 @@ function App() {
     setAllExpanded(!allExpanded);
   };
   
-  // 用户认证状态
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [users, setUsers] = useState([]);
-  
-  // 管理员面板状态 - 移到组件顶部
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [userTodos, setUserTodos] = useState([]);
-
   // 检查用户是否已登录
   useEffect(() => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -88,6 +118,7 @@ function App() {
       }
     } catch (error) {
       console.error("获取用户列表失败:", error);
+      message.error("获取用户列表失败");
     }
   };
 
@@ -109,6 +140,7 @@ function App() {
       return data;
     } catch (error) {
       console.error("获取用户待办事项失败:", error);
+      message.error("获取用户待办事项失败");
       return [];
     }
   };
@@ -161,7 +193,7 @@ function App() {
       setTodos(data);
     } catch (error) {
       console.error('获取任务列表失败:', error);
-      alert(`获取任务列表失败: ${error.message}`);
+      message.error(`获取任务列表失败: ${error.message}`);
     } finally {
       clearTimeout(loadingTimeout);
       setLoading(false);
@@ -172,7 +204,7 @@ function App() {
     if (isAuthenticated) {
       fetchTodos();
     }
-  }, [isAuthenticated, fetchTodos]);
+  }, [isAuthenticated]);
 
   // 处理登录成功
   const handleLogin = (userData) => {
@@ -214,6 +246,8 @@ function App() {
     setCurrentTaskSteps([]);
     setExpandedTasks({});
     setAllExpanded(false);
+    
+    message.success("已成功登出");
   };
 
   // 添加步骤
@@ -233,7 +267,7 @@ function App() {
 
   // 提交新任务
   const handleSubmitTask = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!taskName.trim()) return;
     
     setSubmitting(true);
@@ -284,9 +318,10 @@ function App() {
         [addedTodo.id]: true
       }));
       
+      message.success("任务添加成功");
     } catch (error) {
       console.error('添加任务失败:', error);
-      alert(`添加任务失败: ${error.message}`);
+      message.error(`添加任务失败: ${error.message}`);
     } finally {
       setSubmitting(false);
     }
@@ -310,32 +345,42 @@ function App() {
       }
       
       await fetchTodos();
+      message.success("任务状态已更新");
     } catch (error) {
       console.error("切换任务状态失败:", error);
+      message.error("切换任务状态失败");
     }
   };
 
   // 删除任务
   const deleteTodo = async (todoId) => {
-    if (!window.confirm('确定要删除这个任务吗？')) return;
-    
-    try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/todos/${todoId}`, {
-        method: "DELETE",
-        headers: {
-          'Authorization': `Bearer ${token}`
+    Modal.confirm({
+      title: '确认删除',
+      content: '确定要删除这个任务吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+          const res = await fetch(`http://localhost:8080/api/todos/${todoId}`, {
+            method: "DELETE",
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          
+          await fetchTodos();
+          message.success("任务已删除");
+        } catch (error) {
+          console.error("删除任务失败:", error);
+          message.error("删除任务失败");
         }
-      });
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
       }
-      
-      await fetchTodos();
-    } catch (error) {
-      console.error("删除任务失败:", error);
-    }
+    });
   };
 
   // 开始编辑任务
@@ -367,6 +412,13 @@ function App() {
     const newSteps = [...editTaskSteps];
     newSteps.splice(index, 1);
     setEditTaskSteps(newSteps);
+  };
+
+  // 新增：处理编辑中步骤内容的变更
+  const handleEditStepChange = (index, newContent) => {
+    const updatedSteps = [...editTaskSteps];
+    updatedSteps[index].content = newContent;
+    setEditTaskSteps(updatedSteps);
   };
 
   // 更新任务
@@ -415,10 +467,10 @@ function App() {
       
       // 重置编辑状态
       cancelEditTodo();
-      
+      message.success("任务已更新");
     } catch (error) {
       console.error('更新任务失败:', error);
-      alert(`更新任务失败: ${error.message}`);
+      message.error(`更新任务失败: ${error.message}`);
     } finally {
       setUpdatingTodo(false);
     }
@@ -444,6 +496,7 @@ function App() {
       await fetchTodos();
     } catch (error) {
       console.error("切换步骤状态失败:", error);
+      message.error("切换步骤状态失败");
     }
   };
 
@@ -474,280 +527,343 @@ function App() {
   }
 
   return (
-    <div className="app-container">
-      <div className="app-header">
-        <h1 className="app-title">任务列表</h1>
-        <div className="user-info">
-          <span>欢迎，{user.username}</span>
-          {user.isAdmin && <span className="admin-badge">管理员</span>}
-          <button className="logout-button" onClick={handleLogout}>登出</button>
-        </div>
-      </div>
-
-      {/* 管理员面板 */}
-      {user.isAdmin && (
-        <div className="admin-panel">
-          <h2>用户管理</h2>
-          <div className="users-list">
+    <Layout className="layout" style={{ minHeight: '100vh' }}>
+      <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Title level={3} style={{ color: 'white', margin: 0 }}>任务列表</Title>
+        {user ? (
+          <Space>
+            <Text style={{ color: 'white' }}>欢迎, {user.username}</Text>
+            {user.isAdmin && <Tag color="gold">管理员</Tag>}
+            <Button type="primary" danger onClick={handleLogout}>
+              登出
+            </Button>
+          </Space>
+        ) : (
+          <Space>
+            <Button type="primary" onClick={() => { setAuthMode('login'); setIsModalVisible(true); }}>登录</Button>
+            <Button onClick={() => { setAuthMode('register'); setIsModalVisible(true); }}>注册</Button>
+          </Space>
+        )}
+      </Header>
+      <Content style={{ padding: '0 50px', marginTop: 24 }}>
+        {/* 管理员面板 */}
+        {user.isAdmin && (
+          <Card title="用户管理" className="admin-panel" style={{ marginBottom: 20 }}>
             {users.length === 0 ? (
-              <p>暂无用户数据</p>
+              <Empty description="暂无用户数据" />
             ) : (
-              users.map(userData => (
-                <div key={userData.id} className="user-item">
-                  <div className="user-details">
-                    <span className="user-name">{userData.username}</span>
-                    <span className="user-email">{userData.email}</span>
-                    {userData.isAdmin && <span className="admin-badge">管理员</span>}
-                    <button 
-                      className="view-todos-button"
-                      onClick={() => handleUserSelect(userData.id)}
-                    >
-                      {selectedUser === userData.id ? '隐藏待办事项' : '查看待办事项'}
-                    </button>
-                  </div>
-                  
-                  {selectedUser === userData.id && (
-                    <div className="user-todos">
-                      <h3>{userData.username}的待办事项</h3>
-                      {userTodos.length === 0 ? (
-                        <p>该用户暂无待办事项</p>
-                      ) : (
-                        <div className="todos-list">
-                          {userTodos.map(todo => (
-                            <div key={todo.id} className={`user-todo-item ${todo.done ? 'done' : ''}`}>
-                              <div className="todo-header">
-                                <div className="todo-title">
-                                  <input
-                                    type="checkbox"
-                                    checked={todo.done}
-                                    disabled
+              <List
+                dataSource={users}
+                renderItem={userData => (
+                  <List.Item
+                    actions={[
+                      <Button 
+                        type="primary"
+                        onClick={() => handleUserSelect(userData.id)}
+                      >
+                        {selectedUser === userData.id ? '隐藏待办事项' : '查看待办事项'}
+                      </Button>
+                    ]}
+                  >
+                    <div style={{ width: '100%' }}>
+                      <List.Item.Meta
+                        title={
+                          <Space>
+                            <Text strong>{userData.username}</Text>
+                            {userData.isAdmin && <Tag color="gold">管理员</Tag>}
+                          </Space>
+                        }
+                      />
+                      
+                      {selectedUser === userData.id && (
+                        <div className="user-todos" style={{ marginTop: 16, width: '100%' }}>
+                          <Divider orientation="left">{userData.username}的待办事项</Divider>
+                          {userTodos.length === 0 ? (
+                            <Empty description="该用户暂无待办事项" />
+                          ) : (
+                            <List
+                              dataSource={userTodos}
+                              renderItem={todo => (
+                                <List.Item>
+                                  <List.Item.Meta
+                                    avatar={<Checkbox checked={todo.done} disabled />}
+                                    title={<Text delete={todo.done}>{todo.task}</Text>}
+                                    description={
+                                      <Space direction="vertical" size={0}>
+                                        {todo.description && <Text type="secondary">{todo.description}</Text>}
+                                        {todo.createdAt && (
+                                          <Text type="secondary" style={{ fontSize: '12px' }}>创建于: {formatTime(todo.createdAt)}</Text>
+                                        )}
+                                      </Space>
+                                    }
                                   />
-                                  <div>
-                                    <h4>{todo.task}</h4>
-                                    {todo.createdAt && (
-                                      <div className="todo-time">
-                                        创建于: {formatTime(todo.createdAt)}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                                {todo.description && <p className="todo-description">{todo.description}</p>}
-                              </div>
-                            </div>
-                          ))}
+                                </List.Item>
+                              )}
+                            />
+                          )}
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* 添加任务表单 */}
-      <div className="add-task-form">
-        <h2>添加新任务</h2>
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="任务名称"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSubmitTask()}
-          />
-        </div>
-        <div className="form-group">
-          <textarea
-            placeholder="任务描述（可选）"
-            value={taskDesc}
-            onChange={(e) => setTaskDesc(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="steps-container">
-          <h3>步骤</h3>
-          {currentTaskSteps.map((step, index) => (
-            <div key={index} className="step-item">
-              <span>{step.content}</span>
-              <button onClick={() => removeStep(index)}>删除</button>
-            </div>
-          ))}
-          <div className="add-step">
-            <input
-              type="text"
-              placeholder="新步骤"
-              value={newStep}
-              onChange={(e) => setNewStep(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && addStep()}
-            />
-            <button onClick={addStep}>添加步骤</button>
-          </div>
-        </div>
-        <button
-          className="add-task-button"
-          onClick={handleSubmitTask}
-          disabled={!taskName.trim() || submitting}
-        >
-          {submitting ? '提交中...' : '添加任务'}
-        </button>
-      </div>
-
-      {/* 任务列表 */}
-      <div className="todos-container">
-        <div className="todos-header">
-          <h2 className="todos-title">我的任务</h2>
-          <button 
-            className="expand-all-button"
-            onClick={toggleAllExpanded}
-          >
-            {allExpanded ? "全部收起" : "全部展开"}
-          </button>
-        </div>
-        
-        {loading ? (
-          <div className="loading-message">加载中...</div>
-        ) : todos.length === 0 ? (
-          <div className="no-todos-message">暂无任务，快来添加第一个任务吧！</div>
-        ) : (
-          todos.map(todo => (
-            <div key={todo.id} className="todo-item">
-              <div className="todo-header" onClick={() => toggleTaskExpand(todo.id)}>
-                <div className="todo-header-left">
-                  <input
-                    type="checkbox"
-                    className="todo-checkbox"
-                    checked={todo.done}
-                    onChange={() => toggleTodo(todo.id)}
-                    onClick={e => e.stopPropagation()}
-                  />
-                  <div>
-                    <h3 className={`todo-title ${todo.done ? 'done' : ''}`}>{todo.task}</h3>
-                    <span className="todo-time">{formatTime(todo.createdAt)}</span>
-                  </div>
-                </div>
-
-                <div className="todo-header-right">
-                  <button 
-                    className="todo-button update"
-                    onClick={e => {
-                      e.stopPropagation();
-                      startEditTodo(todo);
-                    }}
-                  >
-                    更新
-                  </button>
-                  <button 
-                    className="todo-button expand"
-                    onClick={e => {
-                      e.stopPropagation();
-                      toggleTaskExpand(todo.id);
-                    }}
-                  >
-                    {expandedTasks[todo.id] ? "收起" : "展开"}
-                  </button>
-                  <button 
-                    className="todo-button delete"
-                    onClick={e => {
-                      e.stopPropagation();
-                      deleteTodo(todo.id);
-                    }}
-                  >
-                    删除
-                  </button>
-                </div>
-              </div>
-
-              <div 
-                id={`todo-details-${todo.id}`}
-                className={`todo-details ${expandedTasks[todo.id] ? 'expanded' : ''}`}
-              >
-                {editingTodo === todo.id ? (
-                  <div className="edit-todo-form">
-                    <h4>编辑任务</h4>
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        placeholder="任务名称"
-                        value={editTaskName}
-                        onChange={(e) => setEditTaskName(e.target.value)}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <textarea
-                        placeholder="任务描述（可选）"
-                        value={editTaskDesc}
-                        onChange={(e) => setEditTaskDesc(e.target.value)}
-                      ></textarea>
-                    </div>
-                    <div className="steps-container">
-                      <h4>步骤</h4>
-                      {editTaskSteps.map((step, index) => (
-                        <div key={index} className="step-item">
-                          <span>{step.content}</span>
-                          <button onClick={() => removeEditStep(index)}>删除</button>
-                        </div>
-                      ))}
-                      <div className="add-step">
-                        <input
-                          type="text"
-                          placeholder="新步骤"
-                          value={newStep}
-                          onChange={(e) => setNewStep(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && addEditStep()}
-                        />
-                        <button onClick={addEditStep}>添加步骤</button>
-                      </div>
-                    </div>
-                    <div className="edit-buttons">
-                      <button
-                        className="update-task-button"
-                        onClick={() => handleUpdateTodo(todo.id)}
-                        disabled={!editTaskName.trim() || updatingTodo}
-                      >
-                        {updatingTodo ? '更新中...' : '保存更新'}
-                      </button>
-                      <button
-                        className="cancel-edit-button"
-                        onClick={cancelEditTodo}
-                      >
-                        取消
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    {todo.description && (
-                      <div className="todo-description">{todo.description}</div>
-                    )}
-                    
-                    {todo.steps && todo.steps.length > 0 && (
-                      <div>
-                        <h4 className="todo-steps-title">步骤：</h4>
-                        {todo.steps.map(step => (
-                          <div key={step.id} className="todo-step">
-                            <input
-                              type="checkbox"
-                              className="step-checkbox"
-                              checked={step.completed}
-                              onChange={() => toggleStep(step.id)}
-                            />
-                            <span className={`step-content ${step.completed ? 'done' : ''}`}>
-                              {step.content}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </>
+                  </List.Item>
                 )}
-              </div>
-            </div>
-          ))
+              />
+            )}
+          </Card>
         )}
-      </div>
-    </div>
+
+        {/* 添加任务表单 */}
+        <Card title="添加新任务" className="add-task-form" style={{ marginBottom: 20 }}>
+          <Form layout="vertical">
+            <Form.Item label="任务名称" required>
+              <Input 
+                placeholder="任务名称" 
+                value={taskName} 
+                onChange={(e) => setTaskName(e.target.value)} 
+                onPressEnter={handleSubmitTask}
+              />
+            </Form.Item>
+            
+            <Form.Item label="任务描述">
+              <TextArea 
+                placeholder="任务描述（可选）" 
+                value={taskDesc} 
+                onChange={(e) => setTaskDesc(e.target.value)} 
+                autoSize={{ minRows: 2 }}
+              />
+            </Form.Item>
+            
+            <Form.Item label="步骤">
+              <List
+                dataSource={currentTaskSteps}
+                renderItem={(step, index) => (
+                  <List.Item
+                    actions={[
+                      <Button 
+                        type="text" 
+                        danger 
+                        icon={<DeleteOutlined />} 
+                        onClick={() => removeStep(index)}
+                      />
+                    ]}
+                  >
+                    {step.content}
+                  </List.Item>
+                )}
+                footer={
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <Input 
+                      placeholder="新步骤" 
+                      value={newStep} 
+                      onChange={(e) => setNewStep(e.target.value)} 
+                      onPressEnter={addStep}
+                    />
+                    <Button type="primary" onClick={addStep} icon={<PlusOutlined />}>添加步骤</Button>
+                  </div>
+                }
+              />
+            </Form.Item>
+            
+            <Form.Item>
+              <Button 
+                type="primary" 
+                onClick={handleSubmitTask} 
+                disabled={!taskName.trim() || submitting}
+                loading={submitting}
+                icon={<PlusOutlined />}
+                block
+              >
+                添加任务
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+
+        {/* 任务列表 */}
+        <Card 
+          title={
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>我的任务</span>
+              <Button 
+                type="primary" 
+                onClick={toggleAllExpanded}
+                icon={allExpanded ? <UpOutlined /> : <DownOutlined />}
+              >
+                {allExpanded ? "全部收起" : "全部展开"}
+              </Button>
+            </div>
+          } 
+          className="todos-container"
+        >
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <Spin size="large" />
+            </div>
+          ) : todos.length === 0 ? (
+            <Empty description="暂无任务，快来添加第一个任务吧！" />
+          ) : (
+            <List
+              dataSource={todos}
+              renderItem={todo => (
+                <List.Item
+                  key={todo.id}
+                  className="todo-item"
+                  actions={[
+                    <Button 
+                      type="primary" 
+                      ghost 
+                      icon={<EditOutlined />} 
+                      onClick={() => startEditTodo(todo)}
+                    >
+                      更新
+                    </Button>,
+                    <Button 
+                      type="primary" 
+                      ghost 
+                      icon={expandedTasks[todo.id] ? <UpOutlined /> : <DownOutlined />} 
+                      onClick={() => toggleTaskExpand(todo.id)}
+                    >
+                      {expandedTasks[todo.id] ? "收起" : "展开"}
+                    </Button>,
+                    <Button 
+                      type="primary" 
+                      danger 
+                      ghost 
+                      icon={<DeleteOutlined />} 
+                      onClick={() => deleteTodo(todo.id)}
+                    >
+                      删除
+                    </Button>
+                  ]}
+                >
+                  <div style={{ flex: 1, marginRight: '16px' }}>
+                    <List.Item.Meta
+                      avatar={
+                        <Checkbox 
+                          checked={todo.done} 
+                          onChange={() => toggleTodo(todo.id)}
+                        />
+                      }
+                      title={
+                        <Text delete={todo.done} strong>
+                          {todo.task}
+                        </Text>
+                      }
+                      description={
+                        <Text type="secondary">
+                          {formatTime(todo.createdAt)}
+                        </Text>
+                      }
+                    />
+                    
+                    {expandedTasks[todo.id] && (
+                      <div className="todo-details" style={{ marginTop: 16, width: '100%' }}>
+                        {editingTodo === todo.id ? (
+                          <Form layout="vertical">
+                            <Form.Item label="任务名称" required>
+                              <Input 
+                                value={editTaskName} 
+                                onChange={(e) => setEditTaskName(e.target.value)} 
+                              />
+                            </Form.Item>
+                            
+                            <Form.Item label="任务描述">
+                              <TextArea 
+                                value={editTaskDesc} 
+                                onChange={(e) => setEditTaskDesc(e.target.value)} 
+                                autoSize={{ minRows: 2 }}
+                              />
+                            </Form.Item>
+                            
+                            <Form.Item label="步骤">
+                              <List
+                                dataSource={editTaskSteps}
+                                renderItem={(step, index) => (
+                                  <List.Item
+                                    actions={[
+                                      <Button 
+                                        type="text" 
+                                        danger 
+                                        icon={<DeleteOutlined />} 
+                                        onClick={() => removeEditStep(index)}
+                                      />
+                                    ]}
+                                  >
+                                    <Input
+                                      value={step.content}
+                                      onChange={(e) => handleEditStepChange(index, e.target.value)}
+                                    />
+                                  </List.Item>
+                                )}
+                                footer={
+                                  <div style={{ display: 'flex', gap: 8 }}>
+                                    <Input 
+                                      placeholder="新步骤" 
+                                      value={newStep} 
+                                      onChange={(e) => setNewStep(e.target.value)} 
+                                      onPressEnter={addEditStep}
+                                    />
+                                    <Button type="primary" onClick={addEditStep} icon={<PlusOutlined />}>添加步骤</Button>
+                                  </div>
+                                }
+                              />
+                            </Form.Item>
+                            
+                            <Form.Item>
+                              <Space>
+                                <Button 
+                                  type="primary" 
+                                  onClick={() => handleUpdateTodo(todo.id)} 
+                                  disabled={!editTaskName.trim() || updatingTodo}
+                                  loading={updatingTodo}
+                                >
+                                  保存更新
+                                </Button>
+                                <Button onClick={cancelEditTodo}>取消</Button>
+                              </Space>
+                            </Form.Item>
+                          </Form>
+                        ) : (
+                          <>
+                            {todo.description && (
+                              <Paragraph>{todo.description}</Paragraph>
+                            )}
+                            
+                            {todo.steps && todo.steps.length > 0 && (
+                              <div>
+                                <Divider orientation="left">步骤</Divider>
+                                <List
+                                  dataSource={todo.steps}
+                                  renderItem={step => (
+                                    <List.Item>
+                                      <Checkbox 
+                                        checked={step.completed} 
+                                        onChange={() => toggleStep(step.id)}
+                                      />
+                                      <span style={{ 
+                                        marginLeft: 8, 
+                                        textDecoration: step.completed ? 'line-through' : 'none',
+                                        color: step.completed ? '#8c8c8c' : 'inherit'
+                                      }}>
+                                        {step.content}
+                                      </span>
+                                    </List.Item>
+                                  )}
+                                />
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </List.Item>
+              )}
+            />
+          )}
+        </Card>
+      </Content>
+    </Layout>
   );
-} // App 函数结束
+}
 
 export default App;
