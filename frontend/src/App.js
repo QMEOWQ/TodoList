@@ -114,7 +114,7 @@ function App() {
       
       if (res.ok) {
         const data = await res.json();
-        setUsers(data);
+        setUsers(data || []);
       }
     } catch (error) {
       console.error("获取用户列表失败:", error);
@@ -155,7 +155,7 @@ function App() {
     
     setSelectedUser(userId);
     const todos = await fetchUserTodos(userId);
-    setUserTodos(todos);
+    setUserTodos(todos || []);
   };
 
   const fetchTodos = async () => {
@@ -190,7 +190,7 @@ function App() {
       }
       
       const data = await response.json();
-      setTodos(data);
+      setTodos(data || []);
     } catch (error) {
       console.error('获取任务列表失败:', error);
       message.error(`获取任务列表失败: ${error.message}`);
