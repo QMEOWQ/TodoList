@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"backend/models"
+	"github.com/TodoList/models"
 )
 
 // TodoHandler 处理待办事项相关的HTTP请求
@@ -26,12 +26,40 @@ func NewTodoHandler(model *models.TodoModel) *TodoHandler {
 // EnableCORS 添加CORS头信息
 func EnableCORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		// 允许多个前端端口
+		origin := r.Header.Get("Origin")
+		log.Printf("CORS请求: %s %s, Origin: %s", r.Method, r.URL.Path, origin)
+
+		allowedOrigins := []string{
+			"http://localhost:3000",
+			"http://localhost:3001",
+			"http://localhost:3002",
+			"http://127.0.0.1:3000",
+			"http://127.0.0.1:3001",
+			"http://127.0.0.1:3002",
+		}
+
+		// 检查请求来源是否在允许列表中
+		for _, allowedOrigin := range allowedOrigins {
+			if origin == allowedOrigin {
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+				log.Printf("允许来源: %s", origin)
+				break
+			}
+		}
+
+		// 如果没有Origin头或不在允许列表中，设置默认值
+		if w.Header().Get("Access-Control-Allow-Origin") == "" {
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+			log.Printf("使用默认来源: http://localhost:3000")
+		}
+
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		if r.Method == "OPTIONS" {
+			log.Printf("处理OPTIONS预检请求")
 			w.WriteHeader(http.StatusOK)
 			return
 		}

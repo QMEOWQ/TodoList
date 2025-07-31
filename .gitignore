@@ -15,6 +15,11 @@ frontend/node_modules
 # possible env
 myenv.txt
 backend/.env
+.cursor
+BUTTON_FIX_NOTES.md
+LAYOUT_ADJUSTMENT_NOTES.md
+OPTIMIZATION_GUIDE.md
+USAGE_INSTRUCTIONS.md
 
 # mis
 .DS_Store

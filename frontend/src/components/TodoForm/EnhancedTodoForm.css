@@ -1,0 +1,352 @@
+.enhanced-todo-form-card {
+  margin-bottom: 24px;
+  border-radius: 16px !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden;
+}
+
+.enhanced-todo-form-card .ant-card-head {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: none;
+  padding: 16px 24px;
+}
+
+.enhanced-todo-form-card .ant-card-head-title {
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.enhanced-todo-form-card .ant-card-head-title .anticon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.enhanced-todo-form-card .ant-card-extra {
+  color: white;
+}
+
+.enhanced-todo-form-card .ant-card-extra .ant-switch {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.enhanced-todo-form-card .ant-card-extra .ant-switch-checked {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.enhanced-todo-form {
+  padding: 8px 0;
+}
+
+.enhanced-todo-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.enhanced-todo-form .ant-input,
+.enhanced-todo-form .ant-input-number,
+.enhanced-todo-form .ant-select-selector,
+.enhanced-todo-form .ant-picker {
+  border-radius: 8px !important;
+  border: 1px solid #e5e7eb !important;
+  transition: all 0.3s ease !important;
+}
+
+.enhanced-todo-form .ant-input:hover,
+.enhanced-todo-form .ant-input-number:hover,
+.enhanced-todo-form .ant-select-selector:hover,
+.enhanced-todo-form .ant-picker:hover {
+  border-color: #d1d5db !important;
+}
+
+.enhanced-todo-form .ant-input:focus,
+.enhanced-todo-form .ant-input-focused,
+.enhanced-todo-form .ant-input-number:focus,
+.enhanced-todo-form .ant-input-number-focused,
+.enhanced-todo-form .ant-select-focused .ant-select-selector,
+.enhanced-todo-form .ant-picker:focus,
+.enhanced-todo-form .ant-picker-focused {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* 优先级选择器样式 */
+.enhanced-todo-form .ant-select-item-option-content {
+  display: flex;
+  align-items: center;
+}
+
+/* 提醒设置 */
+.reminder-setting {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.reminder-setting .ant-switch {
+  margin-right: 8px;
+}
+
+/* 标签管理 */
+.tags-section {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.custom-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.custom-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-tag .ant-tag-close-icon {
+  margin-left: 6px;
+  font-size: 10px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.custom-tag .ant-tag-close-icon:hover {
+  color: #ef4444;
+}
+
+/* 步骤管理 */
+.steps-section {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.steps-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.step-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.step-item:last-child {
+  margin-bottom: 0;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.step-delete {
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.step-item:hover .step-delete {
+  opacity: 1;
+}
+
+.step-delete:hover {
+  background: #fef2f2 !important;
+  color: #ef4444 !important;
+}
+
+/* 提交按钮 */
+.submit-button {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+/* 滚动条样式 */
+.tags-list::-webkit-scrollbar,
+.steps-list::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.tags-list::-webkit-scrollbar-track,
+.steps-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.tags-list::-webkit-scrollbar-thumb,
+.steps-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.tags-list::-webkit-scrollbar-thumb:hover,
+.steps-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .enhanced-todo-form-card {
+    margin: 0 -16px 24px -16px;
+    border-radius: 0 !important;
+  }
+  
+  .enhanced-todo-form-card .ant-card-head {
+    padding: 12px 16px;
+  }
+  
+  .enhanced-todo-form-card .ant-card-head-title {
+    font-size: 16px;
+  }
+  
+  .enhanced-todo-form-card .ant-card-body {
+    padding: 16px !important;
+  }
+  
+  .tags-section,
+  .steps-section {
+    padding: 12px;
+  }
+  
+  .step-item {
+    padding: 6px 8px;
+    gap: 8px;
+  }
+  
+  .step-number {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+  
+  .step-content {
+    font-size: 13px;
+  }
+  
+  .custom-tag {
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .enhanced-todo-form-card .ant-card-head {
+    padding: 10px 12px;
+  }
+  
+  .enhanced-todo-form-card .ant-card-body {
+    padding: 12px !important;
+  }
+  
+  .submit-button {
+    height: 44px;
+    font-size: 15px;
+  }
+  
+  .reminder-setting {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .enhanced-todo-form-card {
+    background: rgba(30, 41, 59, 0.9) !important;
+  }
+  
+  .enhanced-todo-form .ant-form-item-label > label {
+    color: #f1f5f9;
+  }
+  
+  .enhanced-todo-form .ant-input,
+  .enhanced-todo-form .ant-input-number,
+  .enhanced-todo-form .ant-select-selector,
+  .enhanced-todo-form .ant-picker {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #f1f5f9 !important;
+  }
+  
+  .enhanced-todo-form .ant-input::placeholder,
+  .enhanced-todo-form .ant-picker-input input::placeholder {
+    color: #94a3b8 !important;
+  }
+  
+  .tags-section,
+  .steps-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .step-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .step-content {
+    color: #f1f5f9;
+  }
+}

@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -17,14 +18,21 @@ type Step struct {
 
 // todo 表示一个待办事项
 type Todo struct {
-	ID          int       `json:"id"`
-	Task        string    `json:"task"`
-	Description string    `json:"description,omitempty"`
-	Done        bool      `json:"done"`
-	Steps       []Step    `json:"steps,omitempty"`
-	UserID      int       `json:"userId"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID            int        `json:"id"`
+	Task          string     `json:"task"`
+	Description   string     `json:"description,omitempty"`
+	Done          bool       `json:"done"`
+	Priority      string     `json:"priority"` // low, medium, high
+	Category      string     `json:"category"` // work, personal, study, health, etc.
+	DueDate       *time.Time `json:"dueDate,omitempty"`
+	Reminder      bool       `json:"reminder"`
+	EstimatedTime *int       `json:"estimatedTime,omitempty"` // 预估时间（分钟）
+	Tags          []string   `json:"tags,omitempty"`
+	Steps         []Step     `json:"steps,omitempty"`
+	UserID        int        `json:"userId"`
+	CreatedAt     time.Time  `json:"createdAt"`
+	UpdatedAt     time.Time  `json:"updatedAt"`
+	CompletedAt   *time.Time `json:"completedAt,omitempty"`
 }
 
 // TodoModel 处理Todo相关的数据库操作
@@ -41,11 +49,23 @@ func NewTodoModel(db *sql.DB) *TodoModel {
 func (m *TodoModel) GetAllTodos(userID int) ([]Todo, error) {
 	var todos []Todo
 
-	// 查询指定用户的所有待办事项
-	rows, err := m.DB.Query(
-		"SELECT id, task, description, done, created_at, updated_at FROM todos WHERE user_id = $1 ORDER BY created_at DESC",
-		userID,
-	)
+	// 查询指定用户的所有待办事项，包含新字段
+	query := `
+		SELECT id, task, description, done, priority, category, due_date,
+		       reminder, estimated_time, tags, created_at, updated_at, completed_at
+		FROM todos
+		WHERE user_id = $1
+		ORDER BY
+			CASE
+				WHEN priority = 'high' THEN 1
+				WHEN priority = 'medium' THEN 2
+				WHEN priority = 'low' THEN 3
+				ELSE 4
+			END,
+			created_at DESC
+	`
+
+	rows, err := m.DB.Query(query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("query todos failed: %w", err)
 	}
@@ -54,18 +74,34 @@ func (m *TodoModel) GetAllTodos(userID int) ([]Todo, error) {
 	// 处理查询结果
 	for rows.Next() {
 		var todo Todo
+		var tagsJSON sql.NullString
 
 		scanErr := rows.Scan(
 			&todo.ID,
 			&todo.Task,
 			&todo.Description,
 			&todo.Done,
+			&todo.Priority,
+			&todo.Category,
+			&todo.DueDate,
+			&todo.Reminder,
+			&todo.EstimatedTime,
+			&tagsJSON,
 			&todo.CreatedAt,
 			&todo.UpdatedAt,
+			&todo.CompletedAt,
 		)
 		if scanErr != nil {
 			log.Printf("scan todo failed: %v", scanErr)
 			continue
+		}
+
+		// 解析标签JSON
+		if tagsJSON.Valid && tagsJSON.String != "" {
+			if err := json.Unmarshal([]byte(tagsJSON.String), &todo.Tags); err != nil {
+				log.Printf("parse tags failed: %v", err)
+				todo.Tags = []string{}
+			}
 		}
 
 		todo.UserID = userID
@@ -94,12 +130,42 @@ func (m *TodoModel) AddTodo(todo *Todo) error {
 		}
 	}()
 
+	// 序列化标签为JSON
+	var tagsJSON string
+	if len(todo.Tags) > 0 {
+		tagsBytes, err := json.Marshal(todo.Tags)
+		if err != nil {
+			return fmt.Errorf("marshal tags failed: %w", err)
+		}
+		tagsJSON = string(tagsBytes)
+	} else {
+		tagsJSON = "[]" // 空数组而不是空字符串
+	}
+
 	// 插入待办事项
 	var todoID int
 	log.Printf("插入任务: %s, 描述: %s, 用户ID: %d", todo.Task, todo.Description, todo.UserID)
+
+	query := `
+		INSERT INTO todos (
+			task, description, done, priority, category, due_date,
+			reminder, estimated_time, tags, user_id, created_at, updated_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW())
+		RETURNING id
+	`
+
 	err = tx.QueryRow(
-		"INSERT INTO todos (task, description, done, user_id, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id",
-		todo.Task, todo.Description, todo.Done, todo.UserID,
+		query,
+		todo.Task,
+		todo.Description,
+		todo.Done,
+		todo.Priority,
+		todo.Category,
+		todo.DueDate,
+		todo.Reminder,
+		todo.EstimatedTime,
+		tagsJSON,
+		todo.UserID,
 	).Scan(&todoID)
 
 	if err != nil {
@@ -161,10 +227,49 @@ func (m *TodoModel) UpdateTodo(todo *Todo, userID int) error {
 		return fmt.Errorf("begin transaction failed: %w", err)
 	}
 
+	// 序列化标签为JSON
+	var tagsJSON string
+	if len(todo.Tags) > 0 {
+		tagsBytes, err := json.Marshal(todo.Tags)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("marshal tags failed: %w", err)
+		}
+		tagsJSON = string(tagsBytes)
+	} else {
+		tagsJSON = "[]" // 空数组而不是空字符串
+	}
+
 	// 更新待办事项
+	updateQuery := `
+		UPDATE todos SET
+			task = $1,
+			description = $2,
+			done = $3,
+			priority = $4,
+			category = $5,
+			due_date = $6,
+			reminder = $7,
+			estimated_time = $8,
+			tags = $9,
+			updated_at = NOW(),
+			completed_at = CASE WHEN $3 = true AND done = false THEN NOW() ELSE completed_at END
+		WHERE id = $10 AND user_id = $11
+	`
+
 	_, err = tx.Exec(
-		"UPDATE todos SET task = $1, description = $2 WHERE id = $3 AND user_id = $4",
-		todo.Task, todo.Description, todo.ID, userID,
+		updateQuery,
+		todo.Task,
+		todo.Description,
+		todo.Done,
+		todo.Priority,
+		todo.Category,
+		todo.DueDate,
+		todo.Reminder,
+		todo.EstimatedTime,
+		tagsJSON,
+		todo.ID,
+		userID,
 	)
 
 	if err != nil {

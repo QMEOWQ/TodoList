@@ -1,0 +1,322 @@
+.task-filter {
+  margin-bottom: 24px;
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.task-filter .ant-card-body {
+  padding: 20px !important;
+}
+
+.search-input {
+  border-radius: 8px !important;
+  border: 1px solid #e5e7eb !important;
+  transition: all 0.3s ease !important;
+}
+
+.search-input:hover {
+  border-color: #d1d5db !important;
+}
+
+.search-input:focus,
+.search-input.ant-input-focused {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.filter-button,
+.sort-button,
+.reset-button {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.filter-button {
+  border-color: #e5e7eb !important;
+  color: #374151 !important;
+}
+
+.filter-button:hover {
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+  transform: translateY(-1px);
+}
+
+.sort-button {
+  border-color: #e5e7eb !important;
+  color: #374151 !important;
+}
+
+.sort-button:hover {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+  transform: translateY(-1px);
+}
+
+.reset-button {
+  color: #6b7280 !important;
+}
+
+.reset-button:hover {
+  color: #ef4444 !important;
+  background: #fef2f2 !important;
+}
+
+/* 过滤器下拉菜单 */
+.filter-dropdown .ant-dropdown-menu {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  padding: 12px !important;
+  min-width: 200px;
+}
+
+.filter-dropdown .ant-dropdown-menu-item {
+  border-radius: 8px !important;
+  margin-bottom: 8px !important;
+  padding: 0 !important;
+}
+
+.filter-dropdown .ant-dropdown-menu-item:hover {
+  background: transparent !important;
+}
+
+.filter-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.filter-label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 14px;
+}
+
+/* 排序下拉菜单 */
+.sort-dropdown .ant-dropdown-menu {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  padding: 8px !important;
+  min-width: 180px;
+}
+
+.sort-dropdown .ant-dropdown-menu-item {
+  border-radius: 8px !important;
+  margin-bottom: 4px !important;
+  padding: 8px 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.sort-dropdown .ant-dropdown-menu-item:hover {
+  background: #f8fafc !important;
+  transform: translateX(4px);
+}
+
+.sort-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-weight: 500;
+}
+
+.sort-item .anticon {
+  color: #6b7280;
+}
+
+.sort-item .anticon:last-child {
+  margin-left: auto;
+  color: #3b82f6;
+}
+
+/* 活跃过滤器 */
+.active-filters {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.active-filters-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.active-filters .ant-tag {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  padding: 2px 8px !important;
+  margin: 2px !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.active-filters .ant-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.active-filters .ant-tag .ant-tag-close-icon {
+  margin-left: 6px !important;
+  font-size: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.active-filters .ant-tag .ant-tag-close-icon:hover {
+  color: #ef4444 !important;
+}
+
+/* Badge 样式 */
+.filter-button .ant-badge {
+  margin-left: 8px;
+}
+
+.filter-button .ant-badge .ant-badge-count {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  font-size: 10px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  line-height: 14px !important;
+  padding: 0 4px !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .task-filter .ant-card-body {
+    padding: 16px !important;
+  }
+  
+  .filter-actions {
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
+  
+  .active-filters {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  
+  .filter-dropdown .ant-dropdown-menu,
+  .sort-dropdown .ant-dropdown-menu {
+    min-width: 160px;
+  }
+  
+  .filter-item {
+    padding: 6px 8px;
+  }
+  
+  .filter-label {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-filter .ant-card-body {
+    padding: 12px !important;
+  }
+  
+  .search-input {
+    margin-bottom: 8px;
+  }
+  
+  .filter-actions .ant-space {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .filter-button,
+  .sort-button {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .active-filters-label {
+    font-size: 13px;
+  }
+  
+  .active-filters .ant-tag {
+    font-size: 11px !important;
+    padding: 1px 6px !important;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .task-filter {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .search-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #f1f5f9 !important;
+  }
+  
+  .search-input::placeholder {
+    color: #94a3b8 !important;
+  }
+  
+  .filter-button,
+  .sort-button {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #f1f5f9 !important;
+  }
+  
+  .filter-button:hover,
+  .sort-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .reset-button {
+    color: #94a3b8 !important;
+  }
+  
+  .reset-button:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #fca5a5 !important;
+  }
+  
+  .active-filters {
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .active-filters-label {
+    color: #94a3b8;
+  }
+  
+  .filter-dropdown .ant-dropdown-menu,
+  .sort-dropdown .ant-dropdown-menu {
+    background: #1e293b !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .filter-dropdown .ant-dropdown-menu-item,
+  .sort-dropdown .ant-dropdown-menu-item {
+    color: #f1f5f9 !important;
+  }
+  
+  .filter-dropdown .ant-dropdown-menu-item:hover,
+  .sort-dropdown .ant-dropdown-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .filter-label {
+    color: #f1f5f9;
+  }
+}

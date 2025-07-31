@@ -1,21 +1,31 @@
+/* iOS 透明玻璃风格登录界面 */
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  background: linear-gradient(135deg,
+    rgba(173, 216, 230, 0.8) 0%,
+    rgba(135, 206, 235, 0.6) 25%,
+    rgba(176, 224, 230, 0.7) 50%,
+    rgba(173, 216, 230, 0.5) 75%,
+    rgba(135, 206, 235, 0.8) 100%
+  );
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
 }
 
 .login-box {
-  background: white;
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   padding: 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 24px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
   width: 100%;
   max-width: 400px;
   text-align: center;
-  backdrop-filter: blur(10px);
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -25,26 +35,31 @@
 }
 
 .login-box h1 {
-  color: #333;
+  color: rgba(0, 0, 0, 0.8) !important;
   margin-bottom: 0.5rem;
   font-size: 2rem;
   font-weight: 600;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .subtitle {
-  color: #666;
+  color: rgba(0, 0, 0, 0.6) !important;
   margin-bottom: 2rem;
   font-size: 0.95rem;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
+  background: rgba(255, 77, 79, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: rgba(255, 77, 79, 0.9) !important;
   padding: 0.75rem;
-  border-radius: 8px;
+  border-radius: 12px !important;
   margin-bottom: 1rem;
-  border: 1px solid #fcc;
+  border: 1px solid rgba(255, 77, 79, 0.3) !important;
   font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .login-form {
@@ -60,37 +75,50 @@
 .form-group input {
   width: 100%;
   padding: 0.875rem 1rem;
-  border: 2px solid #e1e5e9;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 12px !important;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  color: rgba(0, 0, 0, 0.8) !important;
+  transition: all 0.3s ease !important;
   box-sizing: border-box;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .form-group input:focus {
-  outline: none;
-  border-color: #2575fc;
-  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+  outline: none !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(64, 169, 255, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(64, 169, 255, 0.2) !important;
+}
+
+.form-group input::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
 }
 
 .login-button {
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-  color: white;
-  border: none;
+  background: rgba(64, 169, 255, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(64, 169, 255, 0.5) !important;
+  color: white !important;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 12px !important;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease !important;
   margin-top: 0.5rem;
-  box-shadow: 0 4px 10px rgba(37, 117, 252, 0.3);
+  box-shadow: 0 4px 15px rgba(64, 169, 255, 0.3) !important;
 }
 
 .login-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(37, 117, 252, 0.4);
+  background: rgba(64, 169, 255, 0.5) !important;
+  border-color: rgba(64, 169, 255, 0.7) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(64, 169, 255, 0.4) !important;
+  color: white !important;
 }
 
 .register-link a {
@@ -110,46 +138,32 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: #666;
+  color: rgba(0, 0, 0, 0.6) !important;
   cursor: pointer;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .remember-me input[type="checkbox"] {
   width: auto;
   margin: 0;
+  accent-color: rgba(64, 169, 255, 0.8);
 }
 
 .forgot-password {
-  color: #667eea;
+  color: rgba(64, 169, 255, 0.8) !important;
   text-decoration: none;
   font-size: 0.9rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .forgot-password:hover {
-  color: #5a6fd8;
-}
-
-.login-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 0.5rem;
-}
-
-.login-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  color: rgba(64, 169, 255, 1) !important;
+  text-shadow: 0 2px 4px rgba(64, 169, 255, 0.3);
 }
 
 .login-button:active {
-  transform: translateY(0);
+  transform: translateY(0) !important;
 }
 
 .register-link {
@@ -159,14 +173,16 @@
 }
 
 .register-link a {
-  color: #667eea;
+  color: rgba(64, 169, 255, 0.8) !important;
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .register-link a:hover {
-  color: #5a6fd8;
+  color: rgba(64, 169, 255, 1) !important;
+  text-shadow: 0 2px 4px rgba(64, 169, 255, 0.3);
 }
 
 @media (max-width: 480px) {

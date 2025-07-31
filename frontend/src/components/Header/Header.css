@@ -1,0 +1,241 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0 !important;
+  height: 64px;
+  line-height: 64px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 0 24px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sidebar-toggle {
+  display: none;
+  color: white !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.logo-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.app-title {
+  margin: 0 !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle,
+.notification-btn {
+  color: white !important;
+  border: none !important;
+  background: transparent !important;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover,
+.notification-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-profile:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.username {
+  color: white !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.user-role {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 12px;
+}
+
+/* 用户下拉菜单样式 */
+.user-dropdown .ant-dropdown-menu {
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  padding: 8px !important;
+  min-width: 200px;
+}
+
+.user-dropdown .ant-dropdown-menu-item {
+  border-radius: 8px !important;
+  margin-bottom: 4px !important;
+  padding: 12px 16px !important;
+  font-weight: 500;
+  transition: all 0.2s ease !important;
+}
+
+.user-dropdown .ant-dropdown-menu-item:hover {
+  background: #f8fafc !important;
+  transform: translateX(4px);
+}
+
+.user-dropdown .ant-dropdown-menu-item-danger:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+.user-dropdown .ant-dropdown-menu-item-icon {
+  margin-right: 12px !important;
+  font-size: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: flex !important;
+  }
+  
+  .header-content {
+    padding: 0 16px;
+  }
+  
+  .app-title {
+    font-size: 20px !important;
+  }
+  
+  .user-info {
+    display: none;
+  }
+  
+  .user-profile {
+    padding: 8px;
+  }
+  
+  .logo-section {
+    gap: 8px;
+  }
+  
+  .logo {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .logo-icon {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    display: none;
+  }
+  
+  .header-left {
+    gap: 8px;
+  }
+  
+  .theme-toggle,
+  .notification-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .app-header {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .logo {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .user-dropdown .ant-dropdown-menu {
+    background: #1e293b !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .user-dropdown .ant-dropdown-menu-item {
+    color: #f1f5f9 !important;
+  }
+  
+  .user-dropdown .ant-dropdown-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+}

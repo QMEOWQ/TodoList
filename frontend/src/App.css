@@ -1,11 +1,52 @@
+/* 简洁现代风格全局样式 */
 body {
-  background-color: #f0f2f5;
+  background: linear-gradient(135deg,
+    #f5f7fa 0%,
+    #c3cfe2 100%
+  );
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* 全局玻璃效果卡片样式 */
+.glass-card {
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+.glass-card-dark {
+  background: rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
 }
 
 .admin-panel,
 .add-task-form,
 .todos-container {
   margin-bottom: 24px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* 确保按钮不被遮挡 */
+.ant-btn {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.ant-form-item {
+  margin-bottom: 20px !important;
+}
+
+.ant-form-item:last-child {
+  margin-bottom: 0 !important;
 }
 
 .user-todos {
@@ -27,27 +68,55 @@ body {
   margin-left: 48px !important;
 }
 
+/* 登录界面玻璃效果 */
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  background: transparent;
 }
 
 .login-card {
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* 登录表单按钮玻璃效果 */
 .login-form-button {
   height: 40px;
+  background: rgba(64, 169, 255, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(64, 169, 255, 0.5) !important;
+  border-radius: 12px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.login-form-button:hover {
+  background: rgba(64, 169, 255, 0.5) !important;
+  border-color: rgba(64, 169, 255, 0.7) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(64, 169, 255, 0.3) !important;
+  color: white !important;
 }
 
 .login-form-forgot {
   float: right;
+  color: rgba(0, 0, 0, 0.6) !important;
+  transition: all 0.3s ease !important;
+}
+
+.login-form-forgot:hover {
+  color: rgba(64, 169, 255, 0.8) !important;
 }
 
 @keyframes fadeIn {
@@ -114,6 +183,127 @@ body {
 
 .action-button {
   padding: 4px 8px;
+}
+
+/* 全局输入框玻璃效果 */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 12px !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-input:focus,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector,
+.ant-picker:focus {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(64, 169, 255, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.2) !important;
+}
+
+.ant-input:hover,
+.ant-input-affix-wrapper:hover,
+.ant-select:hover .ant-select-selector,
+.ant-picker:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.ant-input::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 全局按钮玻璃效果 */
+.ant-btn {
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 12px !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-btn:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.ant-btn-primary {
+  background: rgba(64, 169, 255, 0.3) !important;
+  border-color: rgba(64, 169, 255, 0.5) !important;
+  color: white !important;
+}
+
+.ant-btn-primary:hover {
+  background: rgba(64, 169, 255, 0.5) !important;
+  border-color: rgba(64, 169, 255, 0.7) !important;
+  color: white !important;
+}
+
+.ant-btn-dangerous {
+  background: rgba(255, 77, 79, 0.3) !important;
+  border-color: rgba(255, 77, 79, 0.5) !important;
+  color: white !important;
+}
+
+.ant-btn-dangerous:hover {
+  background: rgba(255, 77, 79, 0.5) !important;
+  border-color: rgba(255, 77, 79, 0.7) !important;
+  color: white !important;
+}
+
+/* 标签玻璃效果 */
+.ant-tag {
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 8px !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+  font-weight: 500 !important;
+}
+
+.ant-tag-blue {
+  background: rgba(64, 169, 255, 0.3) !important;
+  border-color: rgba(64, 169, 255, 0.5) !important;
+  color: white !important;
+}
+
+.ant-tag-success {
+  background: rgba(52, 199, 89, 0.3) !important;
+  border-color: rgba(52, 199, 89, 0.5) !important;
+  color: white !important;
+}
+
+.ant-tag-gold {
+  background: rgba(255, 193, 7, 0.3) !important;
+  border-color: rgba(255, 193, 7, 0.5) !important;
+  color: white !important;
+}
+
+.ant-tag-processing {
+  background: rgba(64, 169, 255, 0.3) !important;
+  border-color: rgba(64, 169, 255, 0.5) !important;
+  color: white !important;
+}
+
+/* 复选框玻璃效果 */
+.ant-checkbox-wrapper {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 /* 修复日期格式 */

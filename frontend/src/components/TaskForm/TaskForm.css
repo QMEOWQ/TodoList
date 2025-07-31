@@ -1,0 +1,259 @@
+/* 简洁现代风格任务表单 */
+.task-form-card {
+  margin-bottom: 24px;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  overflow: visible;
+  position: relative;
+  z-index: 1;
+}
+
+.task-form-card .ant-card-head {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-radius: 16px 16px 0 0;
+  padding: 20px 24px;
+}
+
+.task-form-card .ant-card-head-title {
+  color: #2c3e50 !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+}
+
+.task-form-card .ant-card-body {
+  padding: 24px 24px 32px 24px;
+  background: transparent !important;
+  position: relative;
+  z-index: 2;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #374151 !important;
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.task-input,
+.task-textarea {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  color: #374151 !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.task-input:hover,
+.task-textarea:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.task-input:focus,
+.task-textarea:focus {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.task-input::placeholder,
+.task-textarea::placeholder {
+  color: #9ca3af !important;
+  font-weight: 400 !important;
+}
+
+.steps-container {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-radius: 12px !important;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 16px;
+}
+
+.steps-list {
+  margin-bottom: 16px;
+}
+
+.step-item {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border-radius: 8px !important;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease !important;
+}
+
+.step-item:hover {
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.step-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.step-number {
+  background: #3b82f6 !important;
+  color: white !important;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: #374151 !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.delete-step-btn {
+  color: #ef4444 !important;
+  border-radius: 6px;
+  transition: all 0.2s ease !important;
+}
+
+.delete-step-btn:hover {
+  color: #dc2626 !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.add-step-container {
+  margin-top: 16px;
+  position: relative;
+  z-index: 5;
+}
+
+.step-input {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+}
+
+.step-input:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(64, 169, 255, 0.4) !important;
+}
+
+.step-input:focus {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(64, 169, 255, 0.6) !important;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.15) !important;
+}
+
+.step-input::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.add-step-btn {
+  border-radius: 12px !important;
+  height: 40px;
+}
+
+.glass-button-primary {
+  background: #3b82f6 !important;
+  border: 1px solid #3b82f6 !important;
+  color: white !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2) !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.glass-button-primary:hover {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.glass-button-primary:focus {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: white !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+
+.submit-btn {
+  border-radius: 8px !important;
+  height: 48px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin-top: 24px !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.submit-btn:disabled {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  transform: none !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .task-form-card .ant-card-body {
+    padding: 24px 20px;
+  }
+
+  .steps-container {
+    padding: 20px 16px;
+  }
+
+  .step-item {
+    padding: 12px 16px;
+  }
+
+  .step-number {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    margin-right: 12px;
+  }
+
+  .submit-btn {
+    height: 48px !important;
+    font-size: 15px !important;
+  }
+}

@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"backend/config"
-	"backend/handlers"
-	"backend/models"
+	"github.com/TodoList/config"
+	"github.com/TodoList/handlers"
+	"github.com/TodoList/models"
 
 	"github.com/joho/godotenv"
 )
@@ -52,11 +52,13 @@ func main() {
 
 	// 创建处理器
 	todoHandler := handlers.NewTodoHandler(todoModel)
+	enhancedTodoHandler := handlers.NewEnhancedTodoHandler(todoModel)
 	userHandler := handlers.NewUserHandler(userModel, jwtSecret)
 
 	// 用户认证路由
 	http.HandleFunc("/api/login", handlers.EnableCORS(userHandler.Login))
 	http.HandleFunc("/api/register", handlers.EnableCORS(userHandler.Register))
+	http.HandleFunc("/api/send-verification-code", handlers.EnableCORS(userHandler.SendVerificationCode))
 	http.HandleFunc("/api/users", handlers.EnableCORS(userHandler.AdminMiddleware(userHandler.GetAllUsers)))
 
 	// 主要的待办事项路由
@@ -136,34 +138,67 @@ func main() {
 
 	// 管理员查看用户待办事项路由
 	http.HandleFunc("/api/admin/user-todos/", handlers.EnableCORS(userHandler.AdminMiddleware(func(w http.ResponseWriter, r *http.Request) {
-	  if r.Method != http.MethodGet {
-	    http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	    return
-	  }
-	  
-	  // 从路径中提取用户ID
-	  pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
-	  if len(pathParts) < 4 {
-	    http.Error(w, "Invalid path", http.StatusBadRequest)
-	    return
-	  }
-	  
-	  userID, err := strconv.Atoi(pathParts[3])
-	  if err != nil {
-	    http.Error(w, "Invalid user ID", http.StatusBadRequest)
-	    return
-	  }
-	  
-	  // 获取指定用户的待办事项
-	  todos, err := todoModel.GetAllTodos(userID)
-	  if err != nil {
-	    http.Error(w, err.Error(), http.StatusInternalServerError)
-	    return
-	  }
-	  
-	  w.Header().Set("Content-Type", "application/json")
-	  json.NewEncoder(w).Encode(todos)
+		if r.Method != http.MethodGet {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		// 从路径中提取用户ID
+		pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+		if len(pathParts) < 4 {
+			http.Error(w, "Invalid path", http.StatusBadRequest)
+			return
+		}
+
+		userID, err := strconv.Atoi(pathParts[3])
+		if err != nil {
+			http.Error(w, "Invalid user ID", http.StatusBadRequest)
+			return
+		}
+
+		// 获取指定用户的待办事项
+		todos, err := todoModel.GetAllTodos(userID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(todos)
 	})))
+
+	// 增强API路由
+	http.HandleFunc("/api/v2/todos", handlers.EnableCORS(userHandler.AuthMiddleware(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			enhancedTodoHandler.GetTodosWithFilter(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})))
+
+	// 批量操作路由
+	http.HandleFunc("/api/v2/todos/batch", handlers.EnableCORS(userHandler.AuthMiddleware(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodPut:
+			enhancedTodoHandler.BatchUpdate(w, r)
+		case http.MethodDelete:
+			enhancedTodoHandler.BatchDelete(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})))
+
+	// 统计信息路由
+	http.HandleFunc("/api/v2/todos/stats", handlers.EnableCORS(userHandler.AuthMiddleware(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			enhancedTodoHandler.GetTodoStats(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})))
+
 	log.Println("后端服务运行在 http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

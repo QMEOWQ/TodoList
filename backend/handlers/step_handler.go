@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"backend/models"
+	"github.com/TodoList/models"
 )
 
 // api/todos/:todoID/steps/:stepID

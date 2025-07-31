@@ -88,12 +88,44 @@ func InitSchema(db *sql.DB) error {
 			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		);
 
+		-- 添加新字段（如果不存在）
+		ALTER TABLE todos
+		ADD COLUMN IF NOT EXISTS priority VARCHAR(10) DEFAULT 'medium';
+
+		ALTER TABLE todos
+		ADD COLUMN IF NOT EXISTS category VARCHAR(20) DEFAULT 'personal';
+
+		ALTER TABLE todos
+		ADD COLUMN IF NOT EXISTS due_date TIMESTAMP;
+
+		ALTER TABLE todos
+		ADD COLUMN IF NOT EXISTS reminder BOOLEAN DEFAULT FALSE;
+
+		ALTER TABLE todos
+		ADD COLUMN IF NOT EXISTS estimated_time INTEGER;
+
+		ALTER TABLE todos
+		ADD COLUMN IF NOT EXISTS tags JSONB DEFAULT '[]'::jsonb;
+
+		ALTER TABLE todos
+		ADD COLUMN IF NOT EXISTS completed_at TIMESTAMP;
+
 		CREATE TABLE IF NOT EXISTS steps (
 			id SERIAL PRIMARY KEY,
 			todo_id INTEGER REFERENCES todos (id) ON DELETE CASCADE,
 			content TEXT NOT NULL,
 			completed BOOLEAN DEFAULT FALSE
 		);
+
+		-- 创建索引以提高查询性能
+		CREATE INDEX IF NOT EXISTS idx_todos_user_id ON todos(user_id);
+		CREATE INDEX IF NOT EXISTS idx_todos_priority ON todos(priority);
+		CREATE INDEX IF NOT EXISTS idx_todos_category ON todos(category);
+		CREATE INDEX IF NOT EXISTS idx_todos_due_date ON todos(due_date);
+		CREATE INDEX IF NOT EXISTS idx_todos_done ON todos(done);
+		CREATE INDEX IF NOT EXISTS idx_todos_created_at ON todos(created_at);
+		CREATE INDEX IF NOT EXISTS idx_todos_tags ON todos USING GIN(tags);
+		CREATE INDEX IF NOT EXISTS idx_steps_todo_id ON steps(todo_id);
 	`)
 
 	if err != nil {
